@@ -3,14 +3,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 
 const login = async (req, res) => {
-    const { username, senha } = req.body;
+    const { nomeUsuario, senha } = req.body;
 
-    if (!username || !senha) {
+    if (!nomeUsuario || !senha) {
         return res.status(400).json({ mensagem: 'Usuario ou email e senha são obrigatórios' });
     }
 
     try {
-        const { rowCount, rows } = await query('select * from usuarios where email = $1 or where nome = $1', [username]);
+        const { rowCount, rows } = await query('select * from usuarios where email = $1 or username = $1', [nomeUsuario]);
 
         if (rowCount <= 0) {
             return res.status(400).json({ mensagem: 'Usuario, email ou senha estão incorretas' });
