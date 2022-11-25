@@ -10,5 +10,5 @@ const listarCategorias = async (req, res) => {
 }
 
 module.exports = {
-    listarCategoria
+    listarCategorias
 }

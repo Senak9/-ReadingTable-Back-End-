@@ -15,6 +15,6 @@ rotas.use(filtroAutenticacao);
 rotas.get('/usuario', obterPerfilUsuario);
 rotas.put('/usuario', atualizarPerfilUsuario);
 
-rotas.get('/categoria', listarCategoria);
+rotas.get('/categoria', listarCategorias);
 
 module.exports = rotas
