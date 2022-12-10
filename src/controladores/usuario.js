@@ -11,11 +11,11 @@ const cadastrarUsuario = async (req, res) => {
     try {
         const usuario = await query('select * from usuarios where email = $1 or username = $2', [email, username]);
      
-        if (usuario.rows[0].email === email) {
+        if (usuario.rows[0]?.email === email) {
             return res.status(400).json({ mensagem: 'O e-mail já existe cadastrado.' });
         }
 
-        if (usuario.rows[0].username === username) {
+        if (usuario.rows[0]?.username === username) {
             return res.status(400).json({ mensagem: 'O Usuario já existe cadastrado.' });
         }
 

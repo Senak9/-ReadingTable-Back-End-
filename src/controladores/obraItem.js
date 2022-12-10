@@ -109,8 +109,70 @@ const cadastrarObraItem = async (req, res) => {
     }
 }
 
+const atualizarObraItem = async (req, res) => {
+    const { usuario } = req;
+    const { id } = req.params;
+    const { nome, marcacao, sinopse, links, wiki, criador_id, fonte_id, categoria_id, origem_id, referencia_id } = req.body;
+
+    if (!nome || !marcacao || !sinopse || !links || !wiki || !criador_id || !fonte_id || !categoria_id || !origem_id || !referencia_id) {
+        return res.status(400).json({ mensagen: 'Todos os campos são obrigatórios' })
+    }
+
+    try {
+        const obraItem = await query('select * from itens where usuario_id = $1 and id = $2', [usuario.id, id]);
+
+        if (obraItem.rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'A obra não existe' });
+        }
+
+        const categoria = await query('select * from categorias where id = $1', [categoria_id]);
+
+        if (categoria.rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'A categoria não existe' });
+        }
+        
+        const criador = await query('select * from criadores where id = $1', [criador_id]);
+
+        if (criador.rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'A autor não existe' });
+        }
+
+        const fonte = await query('select * from linguagemoriginal where id = $1', [fonte_id]);
+
+        if (fonte.rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'A linguagem não existe' });
+        }
+
+        const origem = await query('select * from tipoobra where id = $1', [origem_id]);
+
+        if (origem.rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'A tipo não existe' });
+        }
+
+        const referencia = await query('select * from referencias where id = $1', [referencia_id]);
+
+        if (referencia.rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'O grupo não existe' });
+        }
+
+        const queryAtualizacao = 'update itens set nome = $1, marcacao = $2, sinopse = $3, links = $4, wiki = $5, criador_id = $6, fonte_id = $7, categoria_id = $8, origem_id = $9, referencia_id = $10 where id = $11';
+        const paramAtualizacao = [nome, marcacao, sinopse, links, wiki, criador_id, fonte_id, categoria_id, origem_id, referencia_id, id];
+        const obraItemAtualizada = await query(queryAtualizacao, paramAtualizacao);
+        
+
+        if (obraItemAtualizada.rowCount <= 0) {
+            return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+        }
+
+        return res.status(204).send();
+    } catch (error) {
+        return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+    }
+}
+
 module.exports = {
     listaObraItem,
     detalharObraItem,
-    cadastrarObraItem
+    cadastrarObraItem,
+    atualizarObraItem
 }

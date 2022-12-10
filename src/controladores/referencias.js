@@ -56,9 +56,39 @@ const cadastrarReferencias = async (req, res) => {
     }
 }
 
+const atualizarReferencias = async (req, res) => {
+    const { usuario } = req;
+    const { id } = req.params;
+    const { apelido } = req.body;
+
+    if (!apelido) {
+        return res.status(400).json({ mensagen: 'Nome do gurpo é obrigatório' })
+    }
+
+    try {
+        const referencias = await query('select * from referencias where usuario_id = $1 and id = $2', [usuario.id, id]);
+
+        if (referencias.rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'O grupo não existe' });
+        }
+
+        const queryAtualizacao = 'update referencias set apelido = $1 where id = $2';
+        const paramAtualizacao = [apelido, id];
+        const referenciasAtualizada = await query(queryAtualizacao, paramAtualizacao);
+
+        if (referenciasAtualizada.rowCount <= 0) {
+            return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+        }
+
+        return res.status(204).send();
+    } catch (error) {
+        return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+    }
+}
 
 module.exports = {
     listarReferencias,
     detalharReferencias,
-    cadastrarReferencias
+    cadastrarReferencias,
+    atualizarReferencias
 }

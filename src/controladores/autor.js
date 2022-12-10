@@ -57,8 +57,39 @@ const cadastrarCriador = async (req, res) => {
     }
 }
 
+const atualizarCriador = async (req, res) => {
+    const { usuario } = req;
+    const { id } = req.params;
+    const { nome } = req.body;
+
+    if (!nome) {
+        return res.status(400).json({ mensagen: 'Nome do autor é obrigatório' })
+    }
+
+    try {
+        const criador = await query('select * from criadores where usuario_id = $1 and id = $2', [usuario.id, id]);
+
+        if (criador.rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'O autor não existe' });
+        }
+
+        const queryAtualizacao = 'update criadores set nome = $1 where id = $2';
+        const paramAtualizacao = [nome, id];
+        const criadorAtualizada = await query(queryAtualizacao, paramAtualizacao);
+
+        if (criadorAtualizada.rowCount <= 0) {
+            return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+        }
+
+        return res.status(204).send();
+    } catch (error) {
+        return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+    }
+}
+
 module.exports = {
     listarCriador,
     detalharCriador,
-    cadastrarCriador
+    cadastrarCriador,
+    atualizarCriador
 }
