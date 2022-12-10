@@ -1,4 +1,5 @@
 const express = require('express');
+const { listarCriador } = require('./controladores/autor');
 const { listarCategorias } = require('./controladores/categoria');
 const { login } = require('./controladores/login');
 const { listaObraItem } = require('./controladores/obraItem');
@@ -25,8 +26,12 @@ rotas.get('/origem', listarLinguagemOriginal);
 
 rotas.get('/tipo', listarTipo);
 
-rotas.get('/obraItem', listaObraItem);
+rotas.get('/autor', listarCriador);
 
 rotas.get('/referencias', listarReferencias);
+
+rotas.get('/obraItem', listaObraItem);
+
+
 
 module.exports = rotas

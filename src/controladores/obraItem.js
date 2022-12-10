@@ -18,15 +18,16 @@ const listaObraItem = async (req, res) => {
         }
 
         const queryObraItem = `
-            select i.*, c.nome as categoria_nome from items i 
+            select i.*, c.nome as categoria_nome from itens i 
             left join categorias c 
             on i.categoria_id = c.id 
             where i.usuario_id = $1 
             ${queryLike}
         `;
 
+        const paramFiltro = filtro ? [usuario.id, arrayFiltro] : [usuario.id];
 
-        const obraItens = await query(queryObraItem);
+        const obraItens = await query(queryObraItem, paramFiltro);
         return res.json(obraItens.rows);
     } catch (error) {
         return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
