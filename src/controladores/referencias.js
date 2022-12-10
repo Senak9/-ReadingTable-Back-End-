@@ -30,9 +30,35 @@ const detalharReferencias = async (req, res) => {
     }
 }
 
+const cadastrarReferencias = async (req, res) => {
+    const { usuario } = req;
+    const { apelido } = req.body;
+
+    if (!apelido) {
+        return res.status(400).json({ mensagen: 'Nome do gurpo é obrigatório' })
+    }
+
+    try {
+
+        const queryCadastro = 'insert into referencias (apelido, usuario_id) values ($1, $2) returning *';
+        const paramCadastro = [apelido, usuario.id]
+        const { rowCount, rows } = await query(queryCadastro, paramCadastro);
+
+        if (rowCount <= 0) {
+            return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+        }
+
+        const [referencias] = rows;
+
+        return res.status(201).json(referencias);
+    } catch (error) {
+        return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+    }
+}
 
 
 module.exports = {
     listarReferencias,
-    detalharReferencias
+    detalharReferencias,
+    cadastrarReferencias
 }
