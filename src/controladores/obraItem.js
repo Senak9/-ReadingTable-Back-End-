@@ -34,6 +34,26 @@ const listaObraItem = async (req, res) => {
     }
 }
 
+const detalharObraItem = async (req, res) => {
+    const { usuario } = req;
+    const { id } = req.params;
+
+    try {
+        const { rowCount, rows } = await query('select * from itens where usuario_id = $1 and id = $2', [usuario.id, id]);
+
+        if (rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'o Item não existe' });
+        }
+
+        const [obraItem] = rows
+
+        return res.json(obraItem);
+    } catch (error) {
+        return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+    }
+}
+
 module.exports = {
-    listaObraItem
+    listaObraItem,
+    detalharObraItem
 }

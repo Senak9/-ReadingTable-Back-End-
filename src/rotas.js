@@ -1,10 +1,10 @@
 const express = require('express');
-const { listarCriador } = require('./controladores/autor');
+const { listarCriador, detalharCriador } = require('./controladores/autor');
 const { listarCategorias } = require('./controladores/categoria');
 const { login } = require('./controladores/login');
-const { listaObraItem } = require('./controladores/obraItem');
+const { listaObraItem, detalharObraItem } = require('./controladores/obraItem');
 const { listarLinguagemOriginal } = require('./controladores/origem');
-const { listarReferencias } = require('./controladores/referencias');
+const { listarReferencias, detalharReferencias } = require('./controladores/referencias');
 const { listarTipo } = require('./controladores/tipo');
 const { cadastrarUsuario, obterPerfilUsuario, atualizarPerfilUsuario } = require('./controladores/usuario');
 const { filtroAutenticacao } = require('./intermediarios/autenticacao');
@@ -27,10 +27,13 @@ rotas.get('/origem', listarLinguagemOriginal);
 rotas.get('/tipo', listarTipo);
 
 rotas.get('/autor', listarCriador);
+rotas.get('/autor/:id', detalharCriador);
 
 rotas.get('/referencias', listarReferencias);
+rotas.get('/referencias/:id', detalharReferencias);
 
 rotas.get('/obraItem', listaObraItem);
+rotas.get('/obraItem/:id', detalharObraItem);
 
 
 

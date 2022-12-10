@@ -11,6 +11,28 @@ const listarReferencias = async (req, res) => {
     }
 }
 
+const detalharReferencias = async (req, res) => {
+    const { usuario } = req;
+    const { id } = req.params;
+
+    try {
+        const { rowCount, rows } = await query('select * from referencias where usuario_id = $1 and id = $2', [usuario.id, id]);
+
+        if (rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'O grupo não existe' });
+        }
+
+        const [referencias] = rows
+
+        return res.json(referencias);
+    } catch (error) {
+        return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+    }
+}
+
+
+
 module.exports = {
-    listarReferencias
+    listarReferencias,
+    detalharReferencias
 }
